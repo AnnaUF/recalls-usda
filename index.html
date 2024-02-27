@@ -45,6 +45,73 @@
       view.center = [39, -98];
       view.zoom = 15; // Sets the zoom LOD
 
+    fetch("https://www.fsis.usda.gov/fsis/api/recall/v/1")
+        .then(response => response.json())
+        .then(data => {
+            // Filter the data
+            const activeRecalls = data.filter(item => item.field_active_notice);
+
+            // Group the data by state
+            const recallsByState = activeRecalls.reduce((groups, item) => {
+                const state = item.field_states;
+                if (!groups[state]) {
+                    groups[state] = [];
+                }
+                groups[state].push(item);
+                return groups;
+            }, {});
+
+            // Create a graphic for each state
+            const graphics = Object.entries(recallsByState).map(([state, recalls]) => {
+                return new Graphic({
+                    geometry: { // Replace this with the actual geometry of the state
+                        type: "point",
+                        longitude: 0,
+                        latitude: 0
+                    },
+                    attributes: {
+                        recalls: recalls
+                    }
+                });
+            });
+
+            // Add the graphics to a layer
+            const layer = new GraphicsLayer({
+                graphics: graphics
+            });
+            map.add(layer);
+
+            // Create a popup template
+            const template = new PopupTemplate({
+                title: "{state}",
+                content: "{recalls}",
+                fieldInfos: [
+                    {
+                        fieldName: "field_title",
+                        label: "Title"
+                    },
+                    {
+                        fieldName: "field_risk_level",
+                        label: "Risk Level"
+                    },
+                    {
+                        fieldName: "field_recall_date",
+                        label: "Recall Date"
+                    },
+                    {
+                        fieldName: "field_recall_reason",
+                        label: "Recall Reason"
+                    }
+                ]
+            });
+
+            // Set the popup template on the layer
+            layer.popupTemplate = template;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+        
       const searchWidget = new Search({
         view: view
       });

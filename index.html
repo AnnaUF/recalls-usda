@@ -25,14 +25,14 @@
       });
 
       // API request
-      fetch("https://www.fsis.usda.gov/fsis/api/recall/v/1")
+    fetch("https://cors-anywhere.herokuapp.com/https://www.fsis.usda.gov/fsis/api/recall/v/1")
         .then(response => response.json())
         .then(data => {
-          // Process the data here
-          console.log(data);
+            // Process the data here
+            console.log(data);
         })
         .catch(error => {
-          console.error("Error:", error);
+            console.error("Error:", error);
         });
 
       // Add the locate widget to the top left corner of the view
@@ -45,9 +45,15 @@
       view.center = [39, -98];
       view.zoom = 15; // Sets the zoom LOD
 
-    fetch("https://www.fsis.usda.gov/fsis/api/recall/v/1")
+    fetch("https://cors-anywhere.herokuapp.com/https://www.fsis.usda.gov/fsis/api/recall/v/1")
         .then(response => response.json())
         .then(data => {
+            // Process the data here
+            console.log(data);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
             // Filter the data
             const activeRecalls = data.filter(item => item.field_active_notice);
 
@@ -111,7 +117,7 @@
         .catch(error => {
             console.error("Error:", error);
         });
-        
+
       const searchWidget = new Search({
         view: view
       });

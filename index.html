@@ -33,9 +33,9 @@
         view.ui.add(locateBtn, {
           position: "top-left"
         });
-
-view.center = [39, -98];
-view.zoom = 4;  // Sets the zoom LOD to 13
+        map.add(layer)
+        view.center = [39, -98];
+        view.zoom = 4;  // Sets the zoom LOD to 13
 
 const searchWidget = new Search({
   view: view
@@ -47,7 +47,18 @@ view.ui.add(searchWidget, {
   index: 2
 });
          });
+console.log(activeRecalls)
+         fetch("https://www.fsis.usda.gov/fsis/api/recall/v/1/?field_active_notice=TRUE&recall_field_title=ALL")
+  .then(response => response.json())
+  .then(data => {
+    // Filter the data for field_active_notice being true
+    const activeRecalls = data.filter(item => item.field_active_notice);
 
+    console.log(activeRecalls);
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
         </script>
 
 <style>

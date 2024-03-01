@@ -49,6 +49,27 @@ view.ui.add(searchWidget, {
   index: 2
 });
          });
+
+        fetch("https://www.fsis.usda.gov/fsis/api/recall/v/1")
+          .then(response => response.json())
+          .then(data => {
+            // Filter the data for field_active_notice being true
+            const activeRecalls = data.filter(item => item.field_active_notice);
+
+            // For each active recall, extract the required fields
+            const filteredData = activeRecalls.map(recall => ({
+              title: recall.field_title,
+              riskLevel: recall.field_risk_level,
+              recallDate: recall.field_recall_date,
+              recallReason: recall.field_recall_reason
+            }));
+
+            console.log(filteredData);
+          })
+          .catch(error => {
+            console.error("Error:", error);
+          });
+          
         </script>
 
 <style>

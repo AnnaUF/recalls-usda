@@ -13,8 +13,8 @@
 
 
     <script>
-      require([ "esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/widgets/Search", "esri/layers/FeatureLayer" ], 
-      (esriConfig, Map, MapView, Locate, Search, FeatureLayer) => {
+      require([ "esri/config", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/layers/Group/Layer", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/widgets/Search", "esri/layers/FeatureLayer" ], 
+      (esriConfig, Graphics, GraphicsLayer, GroupLayer, Map, MapView, Locate, Search, FeatureLayer) => {
         //adding api key
         esriConfig.apiKey = "AAPKf617d57521304ebbbb1ccdfe0a6ab7c9xd9_fQk7Gvm5OOYXsPIGypnSnikFVt3o8pt2rZUIIvbSRkQvtGqxioqliq8SP6xH";
 
@@ -48,10 +48,40 @@
           view: view
         });
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
-    .then(response => response.json())
-    .then(data => {
-        L.geoJSON(data).addTo(map);
-      })
+          .then(response => response.json())
+          .then(data => {
+            const states = [...new Set(data.map(item => item.field_states_id))]; // Get unique state IDs
+
+            const layers = states.map(stateId => {
+              const stateData = data.filter(item => item.field_states_id === stateId); // Get data for this state
+
+              const graphics = stateData.map(item => {
+                return new Graphic({
+                  geometry: {
+                    type: "point",
+                    longitude: item.longitude, // NOTE Json is by state, I just want the user to click on state and popup will show recalls only for that state
+                    latitude: item.latitude // Replace with the actual property names in your data
+                  },
+                  attributes: item
+              });
+
+              return new GraphicsLayer({
+                id: `state-${stateId}`,
+                title: `State ${stateId}`, // Replace with actual state name if available
+                graphics: graphics
+              });
+            });
+
+            const groupLayer = new GroupLayer({
+              title: "States",
+              layers: layers
+            });
+
+            map.add(groupLayer);
+          });
+
+            map.add(layer);
+          });
         // Adds the search widget below other elements in
         // the top left corner of the view
         view.ui.add(searchWidget, {

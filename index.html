@@ -13,19 +13,29 @@
 
 
     <script>
-        require([ "esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/widgets/Search" ], (esriConfig, Map, MapView, Locate, Search) => {
-            //adding api key
-            esriConfig.apiKey = "AAPKf617d57521304ebbbb1ccdfe0a6ab7c9xd9_fQk7Gvm5OOYXsPIGypnSnikFVt3o8pt2rZUIIvbSRkQvtGqxioqliq8SP6xH";
+      require([ "esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/widgets/Search", "esri/layers/FeatureLayer" ], 
+      (esriConfig, Map, MapView, Locate, Search, FeatureLayer) => {
+        //adding api key
+        esriConfig.apiKey = "AAPKf617d57521304ebbbb1ccdfe0a6ab7c9xd9_fQk7Gvm5OOYXsPIGypnSnikFVt3o8pt2rZUIIvbSRkQvtGqxioqliq8SP6xH";
 
-            const map = new Map({
-            basemap: "satellite"
-            });
-            const view = new MapView({
-            container: "viewDiv", // Reference to the DOM node that will contain the view
-            map: map // References the map object
-            });
+        const map = new Map({
+          basemap: "satellite"
+        });
 
-            const locateBtn = new Locate({
+        // Define the layer
+        const layer = new FeatureLayer({
+          url: "https://services.arcgis.com/LBbVDC0hKPAnLRpO/arcgis/rest/services/a_shannin_ufl_9b3a6e43ec964e7f_00_layers/FeatureServer"
+        });
+
+        // Add the layer to the map
+        map.add(layer);
+
+        const view = new MapView({
+          container: "viewDiv", // Reference to the DOM node that will contain the view
+          map: map // References the map object
+        });
+
+        const locateBtn = new Locate({
           view: view
         });
 
@@ -33,33 +43,27 @@
         view.ui.add(locateBtn, {
           position: "top-left"
         });
-        map.add(layer)
+
+        const searchWidget = new Search({
+          view: view
+        });
+        fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data).addTo(map);
+      })
+        // Adds the search widget below other elements in
+        // the top left corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-left",
+          index: 2
+        });
+
         view.center = [39, -98];
         view.zoom = 4;  // Sets the zoom LOD to 13
+      });
+    </script>
 
-const searchWidget = new Search({
-  view: view
-});
-// Adds the search widget below other elements in
-// the top left corner of the view
-view.ui.add(searchWidget, {
-  position: "top-left",
-  index: 2
-});
-         });
-console.log(activeRecalls)
-         fetch("https://www.fsis.usda.gov/fsis/api/recall/v/1/?field_active_notice=TRUE&recall_field_title=ALL")
-  .then(response => response.json())
-  .then(data => {
-    // Filter the data for field_active_notice being true
-    const activeRecalls = data.filter(item => item.field_active_notice);
-
-    console.log(activeRecalls);
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
-        </script>
 
 <style>
     html,

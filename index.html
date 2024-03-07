@@ -49,6 +49,8 @@
         });
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
         .then(response => response.json());
+        //Todo: make a dictionary with states as keys
+        //and a list of recalls as values
       })
         view.ui.add(searchWidget, {
           position: "top-left",

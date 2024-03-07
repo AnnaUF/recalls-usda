@@ -48,42 +48,10 @@
           view: view
         });
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
-          .then(response => response.json())
-          .then(data => {
-            const states = [...new Set(data.map(item => item.field_states_id))]; // Get unique state IDs
-
-            const layers = states.map(stateId => {
-              const stateData = data.filter(item => item.field_states_id === stateId); // Get data for this state
-
-              const graphics = stateData.map(item => {
-                return new Graphic({
-                  geometry: {
-                    type: "point",
-                    longitude: item.longitude, // NOTE Json is by state, I just want the user to click on state and popup will show recalls only for that state
-                    latitude: item.latitude // Replace with the actual property names in your data
-                  },
-                  attributes: item
-              });
-
-              return new GraphicsLayer({
-                id: `state-${stateId}`,
-                title: `State ${stateId}`, // Replace with actual state name if available
-                graphics: graphics
-              });
-            });
-
-            const groupLayer = new GroupLayer({
-              title: "States",
-              layers: layers
-            });
-
-            map.add(groupLayer);
-          });
-
-            map.add(layer);
-          });
-        // Adds the search widget below other elements in
-        // the top left corner of the view
+        .then(response => response.json())
+            .then(data => {
+             L.geoJSON(data).addTo(map);
+      })
         view.ui.add(searchWidget, {
           position: "top-left",
           index: 2
@@ -93,8 +61,7 @@
         view.zoom = 4;  // Sets the zoom LOD to 13
       });
     </script>
-
-
+   
 <style>
     html,
     body,

@@ -48,9 +48,7 @@
           view: view
         });
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
-        .then(response => response.json())
-            .then(data => {
-             L.geoJSON(data).addTo(map);
+        .then(response => response.json());
       })
         view.ui.add(searchWidget, {
           position: "top-left",
@@ -59,7 +57,7 @@
 
         view.center = [39, -98];
         view.zoom = 4;  // Sets the zoom LOD to 13
-      });
+      
     </script>
    
 <style>

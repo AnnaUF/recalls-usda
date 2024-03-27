@@ -27,7 +27,7 @@
           url: "https://services.arcgis.com/ue9rwulIoeLEI9bj/arcgis/rest/services/US_StateBoundaries/FeatureServer"
        , popupTemplate: {
           title: "{NAME}",
-          content: "This is {NAME}"
+          content: "In {NAME}, the following products are recalled:\n{RECALLS}"
        }
         });
 
@@ -70,7 +70,7 @@
         .then(recalls => {
           filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
           console.log(filteredRecalls); //TODO make pop up (don't just log)
-          
+          filteredRecalls = filteredRecalls.slice(0, 10);//not most recent, fix later
           const popup = view.popup;
 
           // Listen for click event on the map
@@ -80,7 +80,7 @@
               const feature = response.results[0].graphic;
               if (feature) {
                 // Set the popup content and open the popup
-                popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME);
+                popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", filteredRecalls.join(", "));
                 popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);
                 popup.open({
                   location: event.mapPoint

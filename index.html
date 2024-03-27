@@ -25,6 +25,10 @@
         // Define the layer
         const layer = new FeatureLayer({
           url: "https://services.arcgis.com/ue9rwulIoeLEI9bj/arcgis/rest/services/US_StateBoundaries/FeatureServer"
+       , popupTemplate: {
+          title: "{NAME}",
+          content: "This is {NAME}"
+       }
         });
 
         // Add the layer to the map
@@ -66,6 +70,24 @@
         .then(recalls => {
           filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
           console.log(filteredRecalls); //TODO make pop up (don't just log)
+          
+          const popup = view.popup;
+
+          // Listen for click event on the map
+          view.on("click", (event) => {
+            // Query the features at the clicked location
+            view.hitTest(event).then((response) => {
+              const feature = response.results[0].graphic;
+              if (feature) {
+                // Set the popup content and open the popup
+                popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME);
+                popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);
+                popup.open({
+                  location: event.mapPoint
+                });
+              }
+            });
+          });
         });
         //Todo: make a dictionary with states as keys
         //and a list of recalls as values

@@ -29,16 +29,15 @@
 
         // Add the layer to the map
         map.add(layer);
-
         const view = new MapView({
           container: "viewDiv", // Reference to the DOM node that will contain the view
           map: map // References the map object
         });
-
+      
         const locateBtn = new Locate({
           view: view
         });
-
+      
         // Add the locate widget to the top left corner of the view
         view.ui.add(locateBtn, {
           position: "top-left"
@@ -47,10 +46,27 @@
         const searchWidget = new Search({
           view: view
         });
+
+        function filterRecallsByState(recalls, states) {
+          const nationwide_indicator = 'Nationwide';
+          return recalls.filter(recall => (
+            states.some(state => recall.field_states.includes(state)) || recall.field_states.includes(nationwide_indicator)
+          ));
+        }
+
+        var state_user_clicked_in = 'Florida';
+
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
-        .then(response => response.json());
+        .then(response => response.json())
+        .then(recalls => {
+          filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
+          console.log(filteredRecalls); //TODO make pop up (don't just log)
+        });
         //Todo: make a dictionary with states as keys
         //and a list of recalls as values
+        //then make a function that takes a state as input
+        //and returns the list of recalls for that state
+        
       })
         view.ui.add(searchWidget, {
           position: "top-left",

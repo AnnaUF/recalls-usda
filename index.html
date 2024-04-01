@@ -77,15 +77,17 @@
               const feature = response.results[0].graphic;
               if (feature) {
                 let state_user_clicked_in = feature.attributes.NAME; // Assuming the state name is stored in the NAME attribute
-                let filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
+
+                // Filter the recalls based on the state that the user clicked on
+                let filteredRecalls = recalls.filter(recall => recall.state === state_user_clicked_in);
                 
                 // Take the first recall
                 let recall = filteredRecalls[0];
 
                 if (recall) {
                   // Set the popup content and open the popup
-                  popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", recall.product_description);
-                  popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);
+                  popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.product_description}`;
+                  popup.title = `Recalls in ${feature.attributes.NAME}`;
                 }
               }
             });

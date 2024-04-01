@@ -79,16 +79,14 @@
                 let state_user_clicked_in = feature.attributes.NAME; // Assuming the state name is stored in the NAME attribute
                 let filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
                 
-                // Sort the recalls by date in descending order and take the first 10 items
-                filteredRecalls.sort((a, b) => new Date(b.date) - new Date(a.date));
-                filteredRecalls = filteredRecalls.slice(0, 10);
+                // Take the first recall
+                let recall = filteredRecalls[0];
 
-                // Map the recalls to product descriptions
-                filteredRecalls = filteredRecalls.map(recall => recall.product_description);
-
-                // Set the popup content and open the popup
-                popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", filteredRecalls.join(", "));
-                popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);
+                if (recall) {
+                  // Set the popup content and open the popup
+                  popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", recall.product_description);
+                  popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);
+                }
               }
             });
           });

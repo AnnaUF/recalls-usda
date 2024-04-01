@@ -79,14 +79,14 @@
                 let state_user_clicked_in = feature.attributes.NAME; // Assuming the state name is stored in the NAME attribute
 
                 // Filter the recalls based on the state that the user clicked on or if the recall is nationwide
-                let filteredRecalls = recalls.filter(recall => recall.state === state_user_clicked_in || recall.state === "Nationwide");
-                
+                let filteredRecalls = recalls.filter(recall => recall.field_states === state_user_clicked_in || recall.field_states === "Nationwide");
+
                 // Take the first recall
                 let recall = filteredRecalls[0];
 
                 if (recall) {
                   // Set the popup content and open the popup
-                  popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.field_recall_reason}`; // Access field_recall_reason as a property of the recall object
+                  popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.field_recall_reason}`;
                   popup.title = `Recalls in ${feature.attributes.NAME}`;
                 }
               }

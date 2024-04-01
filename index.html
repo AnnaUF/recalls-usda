@@ -83,6 +83,9 @@
                 filteredRecalls.sort((a, b) => new Date(b.date) - new Date(a.date));
                 filteredRecalls = filteredRecalls.slice(0, 10);
 
+                // Map the recalls to product descriptions
+                filteredRecalls = filteredRecalls.map(recall => recall.product_description);
+
                 // Set the popup content and open the popup
                 popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", filteredRecalls.join(", "));
                 popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);

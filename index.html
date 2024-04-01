@@ -69,8 +69,13 @@
         .then(response => response.json())
         .then(recalls => {
           filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
+          
+          // Sort the recalls by date in descending order and take the first 10 items
+          filteredRecalls.sort((a, b) => new Date(b.date) - new Date(a.date));
+          filteredRecalls = filteredRecalls.slice(0, 10);
+
           console.log(filteredRecalls); //TODO make pop up (don't just log)
-          filteredRecalls = filteredRecalls.slice(0, 10);//not most recent, fix later
+          
           const popup = view.popup;
 
           // Listen for click event on the map
@@ -82,13 +87,11 @@
                 // Set the popup content and open the popup
                 popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", filteredRecalls.join(", "));
                 popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);
-                popup.open({
-                  location: event.mapPoint
-                });
               }
             });
           });
         });
+  
         //Todo: make a dictionary with states as keys
         //and a list of recalls as values
         //then make a function that takes a state as input

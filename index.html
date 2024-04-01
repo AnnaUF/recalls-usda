@@ -86,7 +86,7 @@
 
                 if (recall) {
                   // Set the popup content and open the popup
-                  popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.product_description}`;
+                  popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.field_recall_reason}`; // Access field_recall_reason as a property of the recall object
                   popup.title = `Recalls in ${feature.attributes.NAME}`;
                 }
               }

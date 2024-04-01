@@ -68,14 +68,6 @@
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
         .then(response => response.json())
         .then(recalls => {
-          filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
-          
-          // Sort the recalls by date in descending order and take the first 10 items
-          filteredRecalls.sort((a, b) => new Date(b.date) - new Date(a.date));
-          filteredRecalls = filteredRecalls.slice(0, 10);
-
-          console.log(filteredRecalls); //TODO make pop up (don't just log)
-          
           const popup = view.popup;
 
           // Listen for click event on the map
@@ -84,6 +76,13 @@
             view.hitTest(event).then((response) => {
               const feature = response.results[0].graphic;
               if (feature) {
+                let state_user_clicked_in = feature.attributes.NAME; // Assuming the state name is stored in the NAME attribute
+                let filteredRecalls = filterRecallsByState(recalls, state_user_clicked_in);
+                
+                // Sort the recalls by date in descending order and take the first 10 items
+                filteredRecalls.sort((a, b) => new Date(b.date) - new Date(a.date));
+                filteredRecalls = filteredRecalls.slice(0, 10);
+
                 // Set the popup content and open the popup
                 popup.content = popupTemplate.content.replace("{NAME}", feature.attributes.NAME).replace("{RECALLS}", filteredRecalls.join(", "));
                 popup.title = popupTemplate.title.replace("{NAME}", feature.attributes.NAME);

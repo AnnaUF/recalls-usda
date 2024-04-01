@@ -81,9 +81,6 @@
                 // Filter the recalls based on the state that the user clicked on or if the recall is nationwide
                 let filteredRecalls = recalls.filter(recall => recall.field_states === state_user_clicked_in || recall.field_states === "Nationwide");
 
-                // Take the first recall
-                let recall = filteredRecalls[0];
-
                 if (recall) {
                   // Set the popup content and open the popup
                   popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.field_recall_reason}`;

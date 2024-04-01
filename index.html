@@ -78,8 +78,8 @@
               if (feature) {
                 let state_user_clicked_in = feature.attributes.NAME; // Assuming the state name is stored in the NAME attribute
 
-                // Filter the recalls based on the state that the user clicked on
-                let filteredRecalls = recalls.filter(recall => recall.state === state_user_clicked_in);
+                // Filter the recalls based on the state that the user clicked on or if the recall is nationwide
+                let filteredRecalls = recalls.filter(recall => recall.state === state_user_clicked_in || recall.state === "Nationwide");
                 
                 // Take the first recall
                 let recall = filteredRecalls[0];

@@ -17,7 +17,42 @@
       (esriConfig, Graphics, GraphicsLayer, Map, MapView, Locate, Search, FeatureLayer) => {
         //adding api key
         esriConfig.apiKey = "AAPKf617d57521304ebbbb1ccdfe0a6ab7c9xd9_fQk7Gvm5OOYXsPIGypnSnikFVt3o8pt2rZUIIvbSRkQvtGqxioqliq8SP6xH";
+        
+        function filterRecallsByState(recalls, states) {
+          const nationwide_indicator = 'Nationwide';
+          return recalls.filter(recall => (
+            states.some(state => recall.field_states.includes(state)) || recall.field_states.includes(nationwide_indicator)
+          ));
+        }
 
+        function recallToString(recall) {
+          return `Recall Reason: ${recall.Reason_for_Recall}, States: ${recall.field_states.join(', ')}`;
+        }
+
+
+        fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
+        .then(response => response.json())
+        .then(recalls => {
+          let popupmessage= recallToString(recalls[0]);
+          console.log(popupmessage);
+          console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
+          view.on('click', event => {
+            const screenPoint = {
+              x: event.x,
+              y: event.y
+            };
+            view.hitTest(screenPoint)
+            .then(response => {
+              if (response.results.length) {
+                const graphic = response.results.filter(result => result.graphic.layer === layer)[0].graphic;
+                graphic.attributes['RECALLS'] = 'We are recalling tomato soup because the tomatoes are actually strawberries.';;
+                const recallsInState = filterRecallsByState(recalls, [state]);
+                const recallsInStateString = recallsInState.map(recallToString).join('\n');
+                
+              }
+            });
+          });
+        });
         const map = new Map({
           basemap: "satellite"
         });
@@ -56,44 +91,10 @@
           view: view
         });
 
-        function filterRecallsByState(recalls, states) {
-          const nationwide_indicator = 'Nationwide';
-          return recalls.filter(recall => (
-            states.some(state => recall.field_states.includes(state)) || recall.field_states.includes(nationwide_indicator)
-          ));
-        }
 
         var state_user_clicked_in = ['Florida'];
 
-        function recallToString(recall) {
-          return `Recall Reason: ${recall.Reason_for_Recall}, States: ${recall.field_states.join(', ')}`;
-        }
-
-
-        fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
-        .then(response => response.json())
-        .then(recalls => {
-          const popup = view.popup;
-          let popupmessage= recallToString(recalls[0]);
-          console.log(popupmessage);
-          console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
-          view.on('click', event => {
-            const screenPoint = {
-              x: event.x,
-              y: event.y
-            };
-            view.hitTest(screenPoint)
-            .then(response => {
-              if (response.results.length) {
-                const graphic = response.results.filter(result => result.graphic.layer === layer)[0].graphic;
-                graphic.attributes['RECALLS'] = 'We are recalling tomato soup because the tomatoes are actually strawberries.';;
-                const recallsInState = filterRecallsByState(recalls, [state]);
-                const recallsInStateString = recallsInState.map(recallToString).join('\n');
-                
-              }
-            });
-          });
-        });
+        
   
         //Todo: make a dictionary with states as keys
         //and a list of recalls as values

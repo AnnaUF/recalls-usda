@@ -69,7 +69,7 @@
         .then(response => response.json())
         .then(recalls => {
           const popup = view.popup;
-let recall = { field_recall_reason: 'Some reason', field_states: 'Florida' };
+let recall = { field_states: 'Florida' };
 console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
           view.on('click', event => {
             const screenPoint = {

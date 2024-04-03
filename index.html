@@ -69,23 +69,25 @@
         .then(response => response.json())
         .then(recalls => {
           const popup = view.popup;
-
-          // Listen for click event on the map
-          view.on("click", (event) => {
-            // Query the features at the clicked location
-            view.hitTest(event).then((response) => {
-              const feature = response.results[0].graphic;
-              if (feature) {
-                let state_user_clicked_in = feature.attributes.NAME; // Assuming the state name is stored in the NAME attribute
-
-                // Filter the recalls based on the state that the user clicked on or if the recall is nationwide
-                let filteredRecalls = recalls.filter(recall => recall.field_states === state_user_clicked_in || recall.field_states === "Nationwide");
-
-                if (recall) {
-                  // Set the popup content and open the popup
-                  popup.content = `State: ${feature.attributes.NAME} <br> Recall: ${recall.field_recall_reason}`;
-                  popup.title = `Recalls in ${feature.attributes.NAME}`;
-                }
+let recall = { field_recall_reason: 'Some reason', field_states: 'Florida' };
+console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
+          view.on('click', event => {
+            const screenPoint = {
+              x: event.x,
+              y: event.y
+            };
+            view.hitTest(screenPoint)
+            .then(response => {
+              if (response.results.length) {
+                const graphic = response.results.filter(result => result.graphic.layer === layer)[0].graphic;
+                const state = graphic.getAttribute('NAME');
+                const recallsInState = filterRecallsByState(recalls, [state]);
+                const recallsInStateString = recallsInState.map(recallToString).join('\n');
+                popup.open({
+                  title: state,
+                  content: recallsInStateString,
+                  location: event.mapPoint
+                });
               }
             });
           });

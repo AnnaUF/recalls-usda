@@ -65,11 +65,17 @@
 
         var state_user_clicked_in = ['Florida'];
 
+        function recallToString(recall) {
+          return `Recall Reason: ${recall.Reason_for_Recall}, States: ${recall.field_states.join(', ')}`;
+        }
+
+
         fetch('https://raw.githubusercontent.com/AnnaUF/recalls-usda/main/StaticFilteredAPIRecalls.json')
         .then(response => response.json())
         .then(recalls => {
           const popup = view.popup;
-let recall = { field_states: 'Florida' };
+          let popupmessage= recallToString(recalls[0]);
+          console.log(popupmessage);
 console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
           view.on('click', event => {
             const screenPoint = {
@@ -85,7 +91,7 @@ console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, St
                 const recallsInStateString = recallsInState.map(recallToString).join('\n');
                 popup.open({
                   title: state,
-                  content: recallsInStateString,
+                  content: popupmessage + recallsInStateString,
                   location: event.mapPoint
                 });
               }

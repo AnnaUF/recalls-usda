@@ -21,13 +21,13 @@
         const map = new Map({
           basemap: "satellite"
         });
-
+        let message= "In {NAME}, the following products are recalled:\n{RECALLS}" + popupmessage + recallsInStateString
         // Define the layer
         const layer = new FeatureLayer({
           url: "https://services.arcgis.com/ue9rwulIoeLEI9bj/arcgis/rest/services/US_StateBoundaries/FeatureServer"
        , popupTemplate: {
           title: "{NAME}",
-          content: "In {NAME}, the following products are recalled:\n{RECALLS} content: popupmessage + recallsInStateString"
+          content: message,
        }
         });
 

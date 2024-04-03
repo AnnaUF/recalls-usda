@@ -76,7 +76,7 @@
           const popup = view.popup;
           let popupmessage= recallToString(recalls[0]);
           console.log(popupmessage);
-console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
+          console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, States: Florida"
           view.on('click', event => {
             const screenPoint = {
               x: event.x,
@@ -86,7 +86,7 @@ console.log(recallToString(recall)); // Outputs: "Recall Reason: Some reason, St
             .then(response => {
               if (response.results.length) {
                 const graphic = response.results.filter(result => result.graphic.layer === layer)[0].graphic;
-                const state = graphic.getAttribute('NAME');
+                graphic.attributes['RECALLS'] = 'We are recalling tomato soup because the tomatoes are actually strawberries.';;
                 const recallsInState = filterRecallsByState(recalls, [state]);
                 const recallsInStateString = recallsInState.map(recallToString).join('\n');
                 popup.open({

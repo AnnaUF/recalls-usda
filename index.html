@@ -89,7 +89,7 @@
                 graphic.attributes['RECALLS'] = 'We are recalling tomato soup because the tomatoes are actually strawberries.';;
                 const recallsInState = filterRecallsByState(recalls, [state]);
                 const recallsInStateString = recallsInState.map(recallToString).join('\n');
-                popup.open({
+                popupTemplate({
                   title: state,
                   content: popupmessage + recallsInStateString,
                   location: event.mapPoint
